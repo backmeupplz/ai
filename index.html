@@ -9,90 +9,94 @@
 <meta property="og:description" content="Arguments weighed. Opinion rendered.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
   :root {
-    --bg: #0a0a0b;
-    --bg-elevated: #111113;
-    --bg-card: #161618;
-    --border: #222225;
-    --text: #e8e6e3;
-    --text-dim: #7a7872;
-    --text-muted: #4a4943;
+    --bg: #09090b;
+    --bg-elevated: rgba(14,14,16,0.85);
+    --bg-card: #131316;
+    --border: #1e1e22;
+    --border-hover: #2a2a30;
+    --text: #ececef;
+    --text-dim: #8b8b94;
+    --text-muted: #4e4e56;
 
-    /* Muted, desaturated palette */
-    --red: #c4463a;
-    --red-dim: #8b3330;
-    --red-bg: #1a1210;
-    --red-border: #2d1c19;
-    --red-glow: rgba(196, 70, 58, 0.06);
+    --red: #e05448;
+    --red-soft: #c44a40;
+    --red-bg: #160f0e;
+    --red-border: #2a1916;
+    --red-glow: rgba(224, 84, 72, 0.05);
 
-    --green: #5a9a6a;
-    --green-dim: #3d6b48;
-    --green-bg: #101a12;
-    --green-border: #192d1c;
-    --green-glow: rgba(90, 154, 106, 0.06);
+    --green: #4aba6a;
+    --green-soft: #3d9a58;
+    --green-bg: #0e1610;
+    --green-border: #162a1a;
+    --green-glow: rgba(74, 186, 106, 0.05);
 
-    --neutral: #8a8880;
+    --radius: 12px;
+    --radius-sm: 8px;
   }
 
   html {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
   }
 
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Sora', system-ui, sans-serif;
     font-weight: 300;
-    line-height: 1.6;
+    line-height: 1.65;
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* ── Noise texture overlay ── */
+  /* ── Subtle grid background ── */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-    background-size: 256px 256px;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 60px 60px;
     pointer-events: none;
-    z-index: 9999;
+    z-index: 0;
   }
 
-  /* ── Top verdict bar ── */
+  /* ── Verdict bar ── */
   .verdict-strip {
     position: sticky;
     top: 0;
     z-index: 100;
     background: var(--bg-elevated);
+    backdrop-filter: blur(20px) saturate(1.2);
     border-bottom: 1px solid var(--border);
-    padding: 1.25rem 2rem;
-    backdrop-filter: blur(12px);
+    padding: 1.25rem 2.5rem;
   }
 
   .verdict-header {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
   }
 
   .verdict-labels {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     margin-bottom: 0.75rem;
   }
 
   .verdict-label {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 0.65rem;
     font-weight: 500;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
@@ -100,38 +104,38 @@
   .verdict-label--better { color: var(--green); }
 
   .verdict-pct {
-    font-family: 'Instrument Serif', serif;
-    font-size: 1.1rem;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
     color: var(--text-dim);
-    font-style: italic;
+    letter-spacing: 0.05em;
   }
 
   .verdict-track {
     position: relative;
-    height: 6px;
+    height: 8px;
     background: var(--bg);
-    border-radius: 3px;
-    overflow: hidden;
+    border-radius: 4px;
+    overflow: visible;
     border: 1px solid var(--border);
   }
 
   .verdict-fill {
     position: absolute;
     top: 0;
-    left: 0;
     height: 100%;
-    border-radius: 3px;
-    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-                background 1.2s ease;
+    border-radius: 4px;
+    transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+                background 1s ease;
   }
 
   .verdict-fill--worse {
-    background: linear-gradient(90deg, var(--red), var(--red-dim));
+    background: linear-gradient(90deg, var(--red) 0%, var(--red-soft) 100%);
     left: 0;
   }
 
   .verdict-fill--better {
-    background: linear-gradient(90deg, var(--green-dim), var(--green));
+    background: linear-gradient(90deg, var(--green-soft) 0%, var(--green) 100%);
     right: 0;
     left: auto;
   }
@@ -140,54 +144,58 @@
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 14px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
     background: var(--text);
     border-radius: 50%;
-    border: 2px solid var(--bg);
-    box-shadow: 0 0 0 2px var(--border), 0 0 20px rgba(232,230,227,0.15);
-    transition: left 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--border-hover), 0 0 24px rgba(236,236,239,0.12);
+    transition: left 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.6s ease,
+                box-shadow 0.6s ease;
     z-index: 2;
   }
 
   /* ── Hero ── */
   .hero {
-    max-width: 1200px;
+    position: relative;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 6rem 2rem 3rem;
+    padding: 8rem 2.5rem 4rem;
     text-align: center;
+    z-index: 1;
   }
 
   .hero h1 {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin-bottom: 1rem;
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    margin-bottom: 1.5rem;
   }
 
-  .hero h1 em {
-    font-style: italic;
-    background: linear-gradient(135deg, var(--red), var(--neutral), var(--green));
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, var(--red) 0%, var(--text-dim) 50%, var(--green) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .hero p {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     color: var(--text-dim);
-    max-width: 540px;
+    max-width: 560px;
     margin: 0 auto;
-    line-height: 1.7;
+    line-height: 1.75;
+    font-weight: 300;
   }
 
   .hero .byline {
-    margin-top: 2rem;
-    font-family: 'JetBrains Mono', monospace;
+    margin-top: 2.5rem;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 0.7rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-muted);
   }
@@ -196,6 +204,7 @@
     color: var(--text-dim);
     text-decoration: none;
     border-bottom: 1px solid var(--border);
+    padding-bottom: 1px;
     transition: color 0.3s, border-color 0.3s;
   }
 
@@ -206,211 +215,230 @@
 
   /* ── Arguments grid ── */
   .arguments {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 2rem 6rem;
+    padding: 0 2.5rem 8rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Center divider */
+  .arguments::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--border) 0%, transparent 100%);
+    transform: translateX(-50%);
   }
 
   .arguments-col {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
   }
 
   .col-header {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 0.65rem;
     font-weight: 500;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    padding: 0.75rem 0;
+    padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
-  .col-header--against { color: var(--red); }
-  .col-header--for { color: var(--green); }
+  .col-header::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .col-header--against { color: var(--red-soft); }
+  .col-header--against::before { background: var(--red); }
+  .col-header--for { color: var(--green-soft); }
+  .col-header--for::before { background: var(--green); }
 
   /* ── Argument cards ── */
   .arg-card {
     position: relative;
-    padding: 1.5rem;
-    border-radius: 8px;
+    padding: 1.75rem;
+    border-radius: var(--radius);
     border: 1px solid var(--border);
-    transition: border-color 0.4s, transform 0.3s, box-shadow 0.4s;
+    transition: border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
     overflow: hidden;
   }
 
-  .arg-card::before {
+  .arg-card::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    height: 2px;
-    opacity: 0.7;
-    transition: opacity 0.4s;
+    width: 3px;
+    height: 100%;
+    opacity: 0.5;
+    transition: opacity 0.35s ease;
   }
 
   .arg-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
   }
 
-  .arg-card:hover::before {
+  .arg-card:hover::after {
     opacity: 1;
   }
 
-  /* Against cards */
+  /* Against */
   .arg-card--against {
     background: var(--red-bg);
     border-color: var(--red-border);
   }
-
-  .arg-card--against::before {
-    background: linear-gradient(90deg, var(--red), transparent);
-  }
-
+  .arg-card--against::after { background: var(--red); }
   .arg-card--against:hover {
-    border-color: var(--red-dim);
-    box-shadow: 0 8px 32px var(--red-glow), inset 0 0 60px var(--red-glow);
+    border-color: rgba(224, 84, 72, 0.25);
+    box-shadow: 0 12px 40px var(--red-glow), 0 0 0 1px rgba(224, 84, 72, 0.06);
   }
 
-  /* For cards */
+  /* For */
   .arg-card--for {
     background: var(--green-bg);
     border-color: var(--green-border);
   }
-
-  .arg-card--for::before {
-    background: linear-gradient(90deg, transparent, var(--green));
+  .arg-card--for::after {
+    background: var(--green);
+    left: auto;
+    right: 0;
   }
-
   .arg-card--for:hover {
-    border-color: var(--green-dim);
-    box-shadow: 0 8px 32px var(--green-glow), inset 0 0 60px var(--green-glow);
+    border-color: rgba(74, 186, 106, 0.25);
+    box-shadow: 0 12px 40px var(--green-glow), 0 0 0 1px rgba(74, 186, 106, 0.06);
   }
 
   .arg-card h3 {
-    font-family: 'Instrument Serif', serif;
-    font-size: 1.2rem;
-    font-weight: 400;
-    margin-bottom: 0.5rem;
-    line-height: 1.3;
+    font-family: 'Sora', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
   }
 
   .arg-card--against h3 { color: var(--red); }
   .arg-card--for h3 { color: var(--green); }
 
   .arg-card p {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--text-dim);
-    line-height: 1.65;
+    line-height: 1.7;
+    font-weight: 300;
   }
 
   .arg-weight {
-    display: inline-block;
-    margin-top: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 1rem;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 0.6rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    padding: 0.2rem 0.5rem;
-    border-radius: 3px;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
   }
 
   .arg-card--against .arg-weight {
-    color: var(--red-dim);
-    background: rgba(196, 70, 58, 0.08);
+    color: var(--red-soft);
+    background: rgba(224, 84, 72, 0.06);
     border: 1px solid var(--red-border);
   }
 
   .arg-card--for .arg-weight {
-    color: var(--green-dim);
-    background: rgba(90, 154, 106, 0.08);
+    color: var(--green-soft);
+    background: rgba(74, 186, 106, 0.06);
     border: 1px solid var(--green-border);
-  }
-
-  /* ── Placeholder state ── */
-  .placeholder-card {
-    border-style: dashed;
-    opacity: 0.4;
-    text-align: center;
-    padding: 2.5rem 1.5rem;
-  }
-
-  .placeholder-card p {
-    font-style: italic;
-    font-size: 0.85rem;
   }
 
   /* ── Footer ── */
   .footer {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 2.5rem;
     border-top: 1px solid var(--border);
     text-align: center;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 0.6rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-muted);
+    position: relative;
+    z-index: 1;
   }
 
   /* ── Animations ── */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .hero { animation: fadeUp 0.8s ease-out both; }
-  .arguments-col:first-child { animation: fadeUp 0.8s 0.2s ease-out both; }
-  .arguments-col:last-child { animation: fadeUp 0.8s 0.35s ease-out both; }
+  .hero { animation: fadeUp 0.7s ease-out both; }
+  .arguments-col:first-child { animation: fadeUp 0.7s 0.15s ease-out both; }
+  .arguments-col:last-child { animation: fadeUp 0.7s 0.25s ease-out both; }
 
-  .arg-card {
-    animation: fadeUp 0.6s ease-out both;
-  }
+  .arg-card { animation: fadeUp 0.5s ease-out both; }
 
-  .arguments-col:first-child .arg-card:nth-child(2) { animation-delay: 0.3s; }
-  .arguments-col:first-child .arg-card:nth-child(3) { animation-delay: 0.4s; }
-  .arguments-col:first-child .arg-card:nth-child(4) { animation-delay: 0.5s; }
-  .arguments-col:first-child .arg-card:nth-child(5) { animation-delay: 0.6s; }
-  .arguments-col:first-child .arg-card:nth-child(6) { animation-delay: 0.7s; }
+  .arguments-col:first-child .arg-card:nth-child(2) { animation-delay: 0.25s; }
+  .arguments-col:first-child .arg-card:nth-child(3) { animation-delay: 0.33s; }
+  .arguments-col:first-child .arg-card:nth-child(4) { animation-delay: 0.41s; }
+  .arguments-col:first-child .arg-card:nth-child(5) { animation-delay: 0.49s; }
+  .arguments-col:first-child .arg-card:nth-child(6) { animation-delay: 0.57s; }
+  .arguments-col:first-child .arg-card:nth-child(7) { animation-delay: 0.65s; }
 
-  .arguments-col:last-child .arg-card:nth-child(2) { animation-delay: 0.35s; }
-  .arguments-col:last-child .arg-card:nth-child(3) { animation-delay: 0.45s; }
-  .arguments-col:last-child .arg-card:nth-child(4) { animation-delay: 0.55s; }
-  .arguments-col:last-child .arg-card:nth-child(5) { animation-delay: 0.65s; }
-  .arguments-col:last-child .arg-card:nth-child(6) { animation-delay: 0.75s; }
+  .arguments-col:last-child .arg-card:nth-child(2) { animation-delay: 0.28s; }
+  .arguments-col:last-child .arg-card:nth-child(3) { animation-delay: 0.36s; }
+  .arguments-col:last-child .arg-card:nth-child(4) { animation-delay: 0.44s; }
+  .arguments-col:last-child .arg-card:nth-child(5) { animation-delay: 0.52s; }
+  .arguments-col:last-child .arg-card:nth-child(6) { animation-delay: 0.60s; }
+  .arguments-col:last-child .arg-card:nth-child(7) { animation-delay: 0.68s; }
 
   /* ── Responsive ── */
-  @media (max-width: 720px) {
+  @media (max-width: 800px) {
     .arguments {
       grid-template-columns: 1fr;
-      gap: 2.5rem;
+      gap: 3rem;
     }
 
-    .verdict-strip { padding: 1rem 1.25rem; }
-    .hero { padding: 4rem 1.25rem 2rem; }
-    .arguments { padding: 0 1.25rem 4rem; }
+    .arguments::before { display: none; }
 
-    .verdict-labels { flex-wrap: wrap; gap: 0.25rem; }
+    .verdict-strip { padding: 1rem 1.5rem; }
+    .hero { padding: 5rem 1.5rem 3rem; }
+    .arguments { padding: 0 1.5rem 5rem; }
+    .footer { padding: 2rem 1.5rem; }
 
+    .verdict-labels { flex-wrap: wrap; gap: 0.3rem; }
     .verdict-pct {
       width: 100%;
       text-align: center;
       order: -1;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.3rem;
     }
+
+    .arg-card { padding: 1.5rem; }
   }
 </style>
 </head>
 <body>
 
-<!-- ── Verdict bar ── -->
+<!-- Verdict bar -->
 <div class="verdict-strip">
   <div class="verdict-header">
     <div class="verdict-labels">
@@ -426,36 +454,21 @@
   </div>
 </div>
 
-<!-- ── Hero ── -->
+<!-- Hero -->
 <div class="hero">
-  <h1>Does AI Make<br>Everything <em>Better?</em></h1>
-  <p>A living document. Arguments on each side, weighed and measured. The bar above reflects the current balance of evidence.</p>
+  <h1>Does AI Make Everything<br><span class="gradient">Better?</span></h1>
+  <p>A living document. Arguments on each side, weighed and measured. The bar reflects the current balance of evidence.</p>
   <div class="byline">by <a href="https://borodutch.com">borodutch</a></div>
 </div>
 
-<!-- ── Arguments ── -->
+<!-- Arguments -->
 <div class="arguments">
-
-  <!-- Against column -->
   <div class="arguments-col" id="col-against">
     <div class="col-header col-header--against">Arguments Against</div>
-
-    <!-- Placeholder -->
-    <div class="arg-card arg-card--against placeholder-card">
-      <p>Arguments coming soon...</p>
-    </div>
   </div>
-
-  <!-- For column -->
   <div class="arguments-col" id="col-for">
     <div class="col-header col-header--for">Arguments For</div>
-
-    <!-- Placeholder -->
-    <div class="arg-card arg-card--for placeholder-card">
-      <p>Arguments coming soon...</p>
-    </div>
   </div>
-
 </div>
 
 <div class="footer">
@@ -463,24 +476,66 @@
 </div>
 
 <script>
-  // ── Argument data ──
-  // Each argument has: title, body, weight (1-3)
-  // Weight: 1 = minor point, 2 = solid argument, 3 = fundamental concern/benefit
   const ARGUMENTS = {
     against: [
-      // { title: "Example", body: "Description here.", weight: 2 },
+      {
+        title: "Unprecedented concentration of power",
+        body: "A handful of companies control the foundational models that increasingly mediate how billions of people work, learn, and create — giving them more influence over daily life than any government, with virtually no democratic accountability.",
+        weight: 3
+      },
+      {
+        title: "The information ecosystem is collapsing",
+        body: "AI-generated slop, deepfakes, and synthetic media are flooding every channel of human communication. The cost of producing convincing lies is now near zero while the cost of verifying truth remains high.",
+        weight: 3
+      },
+      {
+        title: "It hollows out the middle class — again",
+        body: "Unlike past automation waves that hit manual labor, AI targets knowledge workers — writers, coders, analysts, designers — the exact jobs that were supposed to be the safe path. The transition is happening faster than any retraining program can keep up with.",
+        weight: 2
+      },
+      {
+        title: "Learning is being shortcut, not enhanced",
+        body: "Students using AI to write essays and solve problems aren't just cheating — they're skipping the cognitive struggle that builds critical thinking. We're raising a generation fluent in prompting but atrophied in reasoning.",
+        weight: 2
+      },
+      {
+        title: "The environmental bill is hidden and growing",
+        body: "Training runs consume the energy of small cities, inference demands scale exponentially, and tech companies are quietly restarting coal plants while publishing sustainability reports. The carbon math does not add up.",
+        weight: 1
+      }
     ],
     for: [
-      // { title: "Example", body: "Description here.", weight: 2 },
+      {
+        title: "It democratizes expertise gatekept by wealth",
+        body: "A farmer in rural India can now access medical triage, legal guidance, and technical education that previously required expensive professionals in expensive cities. AI is the most powerful equalizer of access to knowledge since the printing press.",
+        weight: 3
+      },
+      {
+        title: "Scientific discovery is accelerating",
+        body: "AlphaFold solved protein folding, AI identifies drug candidates in weeks instead of years, and materials science is being revolutionized. These are not incremental gains — they are breakthroughs that save millions of lives.",
+        weight: 3
+      },
+      {
+        title: "It gives a voice to people who literally couldn't speak",
+        body: "AI-powered assistive tools let nonverbal people communicate fluently, blind people navigate the visual world, and deaf people join real-time conversations. For disabled communities, this isn't convenience — it's liberation.",
+        weight: 2
+      },
+      {
+        title: "One person can now do the work of a team",
+        body: "A solo developer can build what used to require a 10-person company. A single researcher can process a literature base that would take a department years. The leverage for individuals is genuinely unprecedented.",
+        weight: 2
+      },
+      {
+        title: "It forces the question we should have asked decades ago",
+        body: "By automating the drudge work most people quietly hated — data entry, boilerplate, routine analysis — AI creates pressure to restructure economies around what humans uniquely value: care, craft, connection, and judgment.",
+        weight: 1
+      }
     ]
   };
 
-  // ── Render ──
   function render() {
     const colAgainst = document.getElementById('col-against');
     const colFor = document.getElementById('col-for');
-
-    // Keep headers
     const headerAgainst = colAgainst.querySelector('.col-header');
     const headerFor = colFor.querySelector('.col-header');
 
@@ -502,35 +557,15 @@
       return card;
     }
 
-    if (ARGUMENTS.against.length === 0) {
-      const ph = document.createElement('div');
-      ph.className = 'arg-card arg-card--against placeholder-card';
-      ph.innerHTML = '<p>Arguments coming soon...</p>';
-      colAgainst.appendChild(ph);
-    } else {
-      ARGUMENTS.against.forEach(arg => colAgainst.appendChild(createCard(arg, 'against')));
-    }
-
-    if (ARGUMENTS.for.length === 0) {
-      const ph = document.createElement('div');
-      ph.className = 'arg-card arg-card--for placeholder-card';
-      ph.innerHTML = '<p>Arguments coming soon...</p>';
-      colFor.appendChild(ph);
-    } else {
-      ARGUMENTS.for.forEach(arg => colFor.appendChild(createCard(arg, 'for')));
-    }
+    ARGUMENTS.against.forEach(arg => colAgainst.appendChild(createCard(arg, 'against')));
+    ARGUMENTS.for.forEach(arg => colFor.appendChild(createCard(arg, 'for')));
 
     // Calculate verdict
     const totalAgainst = ARGUMENTS.against.reduce((sum, a) => sum + a.weight, 0);
     const totalFor = ARGUMENTS.for.reduce((sum, a) => sum + a.weight, 0);
     const total = totalAgainst + totalFor;
 
-    let pctBetter;
-    if (total === 0) {
-      pctBetter = 50;
-    } else {
-      pctBetter = Math.round((totalFor / total) * 100);
-    }
+    let pctBetter = total === 0 ? 50 : Math.round((totalFor / total) * 100);
     const pctWorse = 100 - pctBetter;
 
     document.getElementById('verdict-worse').style.width = pctWorse + '%';
@@ -538,14 +573,16 @@
     document.getElementById('verdict-marker').style.left = pctBetter + '%';
     document.getElementById('verdict-pct').textContent = pctWorse + ' / ' + pctBetter;
 
-    // Tint the marker based on position
     const marker = document.getElementById('verdict-marker');
     if (pctBetter > 55) {
       marker.style.background = 'var(--green)';
+      marker.style.boxShadow = '0 0 0 2px var(--border-hover), 0 0 20px rgba(74,186,106,0.25)';
     } else if (pctBetter < 45) {
       marker.style.background = 'var(--red)';
+      marker.style.boxShadow = '0 0 0 2px var(--border-hover), 0 0 20px rgba(224,84,72,0.25)';
     } else {
       marker.style.background = 'var(--text)';
+      marker.style.boxShadow = '0 0 0 2px var(--border-hover), 0 0 24px rgba(236,236,239,0.12)';
     }
   }
 
