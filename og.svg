@@ -1,0 +1,59 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="barGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e05448"/>
+      <stop offset="50%" stop-color="#4e4e56"/>
+      <stop offset="100%" stop-color="#4aba6a"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e05448"/>
+      <stop offset="50%" stop-color="#8b8b94"/>
+      <stop offset="100%" stop-color="#4aba6a"/>
+    </linearGradient>
+    <linearGradient id="gridFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="white" stop-opacity="0.025"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#09090b"/>
+
+  <!-- Subtle grid -->
+  <g opacity="0.4">
+    <line x1="200" y1="0" x2="200" y2="630" stroke="white" stroke-opacity="0.02" stroke-width="1"/>
+    <line x1="400" y1="0" x2="400" y2="630" stroke="white" stroke-opacity="0.02" stroke-width="1"/>
+    <line x1="600" y1="0" x2="600" y2="630" stroke="white" stroke-opacity="0.02" stroke-width="1"/>
+    <line x1="800" y1="0" x2="800" y2="630" stroke="white" stroke-opacity="0.02" stroke-width="1"/>
+    <line x1="1000" y1="0" x2="1000" y2="630" stroke="white" stroke-opacity="0.02" stroke-width="1"/>
+    <line x1="0" y1="126" x2="1200" y2="126" stroke="white" stroke-opacity="0.02" stroke-width="1"/>
+    <line x1="0" y1="252" x2="1200" y2="252" stroke="white" stroke-opacity="0.02" stroke-width="1"/>
+    <line x1="0" y1="378" x2="1200" y2="378" stroke="white" stroke-opacity="0.02" stroke-width="1"/>
+    <line x1="0" y1="504" x2="1200" y2="504" stroke="white" stroke-opacity="0.02" stroke-width="1"/>
+  </g>
+
+  <!-- Red glow (left) -->
+  <ellipse cx="200" cy="315" rx="300" ry="250" fill="#e05448" opacity="0.03"/>
+  <!-- Green glow (right) -->
+  <ellipse cx="1000" cy="315" rx="300" ry="250" fill="#4aba6a" opacity="0.03"/>
+
+  <!-- Title -->
+  <text x="600" y="240" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="72" letter-spacing="-2" fill="#ececef">Does AI Make Everything</text>
+  <text x="600" y="330" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="80" letter-spacing="-2" fill="url(#textGrad)">Better?</text>
+
+  <!-- Bar track -->
+  <rect x="150" y="400" width="900" height="10" rx="5" fill="#1e1e22"/>
+  <!-- Bar fill -->
+  <rect x="150" y="400" width="900" height="10" rx="5" fill="url(#barGrad)" opacity="0.8"/>
+  <!-- Marker -->
+  <circle cx="600" cy="405" r="10" fill="#ececef" stroke="#09090b" stroke-width="3"/>
+  <circle cx="600" cy="405" r="13" fill="none" stroke="#2a2a30" stroke-width="1.5"/>
+
+  <!-- Labels -->
+  <text x="150" y="450" font-family="monospace" font-size="13" letter-spacing="1.5" fill="#e05448" text-transform="uppercase">WORSE</text>
+  <text x="600" y="450" text-anchor="middle" font-family="monospace" font-size="13" letter-spacing="1" fill="#4e4e56">50 / 50</text>
+  <text x="1050" y="450" text-anchor="end" font-family="monospace" font-size="13" letter-spacing="1.5" fill="#4aba6a">BETTER</text>
+
+  <!-- Byline -->
+  <text x="600" y="530" text-anchor="middle" font-family="monospace" font-size="14" letter-spacing="2" fill="#4e4e56">BORODUTCH.COM</text>
+</svg>
