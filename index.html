@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI — Better or Worse?</title>
+<meta name="description" content="A weighted opinion on whether AI makes everything better or worse.">
+<meta property="og:title" content="AI — Better or Worse?">
+<meta property="og:description" content="Arguments weighed. Opinion rendered.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+  :root {
+    --bg: #0a0a0b;
+    --bg-elevated: #111113;
+    --bg-card: #161618;
+    --border: #222225;
+    --text: #e8e6e3;
+    --text-dim: #7a7872;
+    --text-muted: #4a4943;
+
+    /* Muted, desaturated palette */
+    --red: #c4463a;
+    --red-dim: #8b3330;
+    --red-bg: #1a1210;
+    --red-border: #2d1c19;
+    --red-glow: rgba(196, 70, 58, 0.06);
+
+    --green: #5a9a6a;
+    --green-dim: #3d6b48;
+    --green-bg: #101a12;
+    --green-border: #192d1c;
+    --green-glow: rgba(90, 154, 106, 0.06);
+
+    --neutral: #8a8880;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Noise texture overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── Top verdict bar ── */
+  .verdict-strip {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 2rem;
+    backdrop-filter: blur(12px);
+  }
+
+  .verdict-header {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .verdict-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.75rem;
+  }
+
+  .verdict-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .verdict-label--worse { color: var(--red); }
+  .verdict-label--better { color: var(--green); }
+
+  .verdict-pct {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  .verdict-track {
+    position: relative;
+    height: 6px;
+    background: var(--bg);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .verdict-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                background 1.2s ease;
+  }
+
+  .verdict-fill--worse {
+    background: linear-gradient(90deg, var(--red), var(--red-dim));
+    left: 0;
+  }
+
+  .verdict-fill--better {
+    background: linear-gradient(90deg, var(--green-dim), var(--green));
+    right: 0;
+    left: auto;
+  }
+
+  .verdict-marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    background: var(--text);
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--border), 0 0 20px rgba(232,230,227,0.15);
+    transition: left 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 2;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 6rem 2rem 3rem;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--red), var(--neutral), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    max-width: 540px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .hero .byline {
+    margin-top: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .hero .byline a {
+    color: var(--text-dim);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .hero .byline a:hover {
+    color: var(--text);
+    border-color: var(--text-dim);
+  }
+
+  /* ── Arguments grid ── */
+  .arguments {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .arguments-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .col-header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+
+  .col-header--against { color: var(--red); }
+  .col-header--for { color: var(--green); }
+
+  /* ── Argument cards ── */
+  .arg-card {
+    position: relative;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: border-color 0.4s, transform 0.3s, box-shadow 0.4s;
+    overflow: hidden;
+  }
+
+  .arg-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    opacity: 0.7;
+    transition: opacity 0.4s;
+  }
+
+  .arg-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .arg-card:hover::before {
+    opacity: 1;
+  }
+
+  /* Against cards */
+  .arg-card--against {
+    background: var(--red-bg);
+    border-color: var(--red-border);
+  }
+
+  .arg-card--against::before {
+    background: linear-gradient(90deg, var(--red), transparent);
+  }
+
+  .arg-card--against:hover {
+    border-color: var(--red-dim);
+    box-shadow: 0 8px 32px var(--red-glow), inset 0 0 60px var(--red-glow);
+  }
+
+  /* For cards */
+  .arg-card--for {
+    background: var(--green-bg);
+    border-color: var(--green-border);
+  }
+
+  .arg-card--for::before {
+    background: linear-gradient(90deg, transparent, var(--green));
+  }
+
+  .arg-card--for:hover {
+    border-color: var(--green-dim);
+    box-shadow: 0 8px 32px var(--green-glow), inset 0 0 60px var(--green-glow);
+  }
+
+  .arg-card h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .arg-card--against h3 { color: var(--red); }
+  .arg-card--for h3 { color: var(--green); }
+
+  .arg-card p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.65;
+  }
+
+  .arg-weight {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+  }
+
+  .arg-card--against .arg-weight {
+    color: var(--red-dim);
+    background: rgba(196, 70, 58, 0.08);
+    border: 1px solid var(--red-border);
+  }
+
+  .arg-card--for .arg-weight {
+    color: var(--green-dim);
+    background: rgba(90, 154, 106, 0.08);
+    border: 1px solid var(--green-border);
+  }
+
+  /* ── Placeholder state ── */
+  .placeholder-card {
+    border-style: dashed;
+    opacity: 0.4;
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+  }
+
+  .placeholder-card p {
+    font-style: italic;
+    font-size: 0.85rem;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero { animation: fadeUp 0.8s ease-out both; }
+  .arguments-col:first-child { animation: fadeUp 0.8s 0.2s ease-out both; }
+  .arguments-col:last-child { animation: fadeUp 0.8s 0.35s ease-out both; }
+
+  .arg-card {
+    animation: fadeUp 0.6s ease-out both;
+  }
+
+  .arguments-col:first-child .arg-card:nth-child(2) { animation-delay: 0.3s; }
+  .arguments-col:first-child .arg-card:nth-child(3) { animation-delay: 0.4s; }
+  .arguments-col:first-child .arg-card:nth-child(4) { animation-delay: 0.5s; }
+  .arguments-col:first-child .arg-card:nth-child(5) { animation-delay: 0.6s; }
+  .arguments-col:first-child .arg-card:nth-child(6) { animation-delay: 0.7s; }
+
+  .arguments-col:last-child .arg-card:nth-child(2) { animation-delay: 0.35s; }
+  .arguments-col:last-child .arg-card:nth-child(3) { animation-delay: 0.45s; }
+  .arguments-col:last-child .arg-card:nth-child(4) { animation-delay: 0.55s; }
+  .arguments-col:last-child .arg-card:nth-child(5) { animation-delay: 0.65s; }
+  .arguments-col:last-child .arg-card:nth-child(6) { animation-delay: 0.75s; }
+
+  /* ── Responsive ── */
+  @media (max-width: 720px) {
+    .arguments {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+
+    .verdict-strip { padding: 1rem 1.25rem; }
+    .hero { padding: 4rem 1.25rem 2rem; }
+    .arguments { padding: 0 1.25rem 4rem; }
+
+    .verdict-labels { flex-wrap: wrap; gap: 0.25rem; }
+
+    .verdict-pct {
+      width: 100%;
+      text-align: center;
+      order: -1;
+      margin-bottom: 0.25rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Verdict bar ── -->
+<div class="verdict-strip">
+  <div class="verdict-header">
+    <div class="verdict-labels">
+      <span class="verdict-label verdict-label--worse">AI makes everything worse</span>
+      <span class="verdict-pct" id="verdict-pct">50 / 50</span>
+      <span class="verdict-label verdict-label--better">AI makes everything better</span>
+    </div>
+    <div class="verdict-track">
+      <div class="verdict-fill verdict-fill--worse" id="verdict-worse" style="width:50%"></div>
+      <div class="verdict-fill verdict-fill--better" id="verdict-better" style="width:50%"></div>
+      <div class="verdict-marker" id="verdict-marker" style="left:50%"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <h1>Does AI Make<br>Everything <em>Better?</em></h1>
+  <p>A living document. Arguments on each side, weighed and measured. The bar above reflects the current balance of evidence.</p>
+  <div class="byline">by <a href="https://borodutch.com">borodutch</a></div>
+</div>
+
+<!-- ── Arguments ── -->
+<div class="arguments">
+
+  <!-- Against column -->
+  <div class="arguments-col" id="col-against">
+    <div class="col-header col-header--against">Arguments Against</div>
+
+    <!-- Placeholder -->
+    <div class="arg-card arg-card--against placeholder-card">
+      <p>Arguments coming soon...</p>
+    </div>
+  </div>
+
+  <!-- For column -->
+  <div class="arguments-col" id="col-for">
+    <div class="col-header col-header--for">Arguments For</div>
+
+    <!-- Placeholder -->
+    <div class="arg-card arg-card--for placeholder-card">
+      <p>Arguments coming soon...</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Opinion as data &mdash; updated when evidence shifts
+</div>
+
+<script>
+  // ── Argument data ──
+  // Each argument has: title, body, weight (1-3)
+  // Weight: 1 = minor point, 2 = solid argument, 3 = fundamental concern/benefit
+  const ARGUMENTS = {
+    against: [
+      // { title: "Example", body: "Description here.", weight: 2 },
+    ],
+    for: [
+      // { title: "Example", body: "Description here.", weight: 2 },
+    ]
+  };
+
+  // ── Render ──
+  function render() {
+    const colAgainst = document.getElementById('col-against');
+    const colFor = document.getElementById('col-for');
+
+    // Keep headers
+    const headerAgainst = colAgainst.querySelector('.col-header');
+    const headerFor = colFor.querySelector('.col-header');
+
+    colAgainst.innerHTML = '';
+    colFor.innerHTML = '';
+    colAgainst.appendChild(headerAgainst);
+    colFor.appendChild(headerFor);
+
+    const weightLabels = { 1: 'Minor point', 2: 'Solid argument', 3: 'Fundamental' };
+
+    function createCard(arg, side) {
+      const card = document.createElement('div');
+      card.className = `arg-card arg-card--${side}`;
+      card.innerHTML = `
+        <h3>${arg.title}</h3>
+        <p>${arg.body}</p>
+        <span class="arg-weight">${weightLabels[arg.weight] || 'Weight ' + arg.weight}</span>
+      `;
+      return card;
+    }
+
+    if (ARGUMENTS.against.length === 0) {
+      const ph = document.createElement('div');
+      ph.className = 'arg-card arg-card--against placeholder-card';
+      ph.innerHTML = '<p>Arguments coming soon...</p>';
+      colAgainst.appendChild(ph);
+    } else {
+      ARGUMENTS.against.forEach(arg => colAgainst.appendChild(createCard(arg, 'against')));
+    }
+
+    if (ARGUMENTS.for.length === 0) {
+      const ph = document.createElement('div');
+      ph.className = 'arg-card arg-card--for placeholder-card';
+      ph.innerHTML = '<p>Arguments coming soon...</p>';
+      colFor.appendChild(ph);
+    } else {
+      ARGUMENTS.for.forEach(arg => colFor.appendChild(createCard(arg, 'for')));
+    }
+
+    // Calculate verdict
+    const totalAgainst = ARGUMENTS.against.reduce((sum, a) => sum + a.weight, 0);
+    const totalFor = ARGUMENTS.for.reduce((sum, a) => sum + a.weight, 0);
+    const total = totalAgainst + totalFor;
+
+    let pctBetter;
+    if (total === 0) {
+      pctBetter = 50;
+    } else {
+      pctBetter = Math.round((totalFor / total) * 100);
+    }
+    const pctWorse = 100 - pctBetter;
+
+    document.getElementById('verdict-worse').style.width = pctWorse + '%';
+    document.getElementById('verdict-better').style.width = pctBetter + '%';
+    document.getElementById('verdict-marker').style.left = pctBetter + '%';
+    document.getElementById('verdict-pct').textContent = pctWorse + ' / ' + pctBetter;
+
+    // Tint the marker based on position
+    const marker = document.getElementById('verdict-marker');
+    if (pctBetter > 55) {
+      marker.style.background = 'var(--green)';
+    } else if (pctBetter < 45) {
+      marker.style.background = 'var(--red)';
+    } else {
+      marker.style.background = 'var(--text)';
+    }
+  }
+
+  render();
+</script>
+
+</body>
+</html>
