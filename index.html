@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI — Better or Worse?</title>
-<meta name="description" content="Arguments for and against AI, weighed and measured. A living opinion by borodutch.">
+<title>AI: Apocalypse or Ascendence?</title>
+<meta name="description" content="Apocalypse or utopian ascendence? Arguments weighed by Bayesian posterior. A living opinion by borodutch.">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ai.borodutch.com/">
-<meta property="og:title" content="Does AI Make Everything Better?">
-<meta property="og:description" content="Arguments for and against AI, weighed and measured. A living opinion by borodutch.">
+<meta property="og:title" content="AI: Apocalypse or Utopian Ascendence?">
+<meta property="og:description" content="Apocalypse or utopian ascendence? Arguments weighed by Bayesian posterior. A living opinion by borodutch.">
 <meta property="og:image" content="https://ai.borodutch.com/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:site_name" content="AI — Better or Worse?">
+<meta property="og:site_name" content="AI: Apocalypse or Ascendence?">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Does AI Make Everything Better?">
-<meta name="twitter:description" content="Arguments for and against AI, weighed and measured. A living opinion by borodutch.">
+<meta name="twitter:title" content="AI: Apocalypse or Utopian Ascendence?">
+<meta name="twitter:description" content="Apocalypse or utopian ascendence? Arguments weighed by Bayesian posterior. A living opinion by borodutch.">
 <meta name="twitter:image" content="https://ai.borodutch.com/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -108,14 +108,22 @@
 
   .verdict-label {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    flex: 1;
   }
 
-  .verdict-label--worse { color: var(--red); }
-  .verdict-label--better { color: var(--green); }
+  .verdict-label--worse { color: #f27a70; text-align: left; }
+  .verdict-label--better { color: #6cd88a; text-align: right; }
+
+  .verdict-pct-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+  }
 
   .verdict-pct {
     font-family: 'Sora', sans-serif;
@@ -123,6 +131,40 @@
     font-weight: 600;
     color: var(--text-dim);
     letter-spacing: 0.05em;
+  }
+
+  .verdict-method {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.25s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .verdict-method:hover { color: var(--text-dim); }
+
+  .verdict-method-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--text-muted);
+    font-size: 0.5rem;
+    font-weight: 500;
+    line-height: 1;
+    transition: border-color 0.25s, color 0.25s;
+  }
+
+  .verdict-method:hover .verdict-method-icon {
+    border-color: var(--text-dim);
+    color: var(--text-dim);
   }
 
   .verdict-track {
@@ -382,6 +424,173 @@
     border: 1px solid var(--green-border);
   }
 
+  .arg-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+  }
+
+  .arg-links a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    transition: color 0.25s, border-color 0.25s;
+  }
+
+  .arg-links a:hover {
+    color: var(--text-dim);
+    border-color: var(--border-hover);
+  }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-overlay.modal--open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    max-width: 520px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 2.5rem;
+    transform: translateY(16px) scale(0.97);
+    transition: transform 0.3s ease;
+  }
+
+  .modal--open .modal-card {
+    transform: translateY(0) scale(1);
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    transition: color 0.2s, background 0.2s;
+  }
+
+  .modal-close:hover {
+    color: var(--text);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .modal-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  .modal-body {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .modal-body strong { color: var(--text); font-weight: 500; }
+  .modal-body em { font-style: italic; }
+
+  .modal-section {
+    margin-top: 1.5rem;
+  }
+
+  .modal-section h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .modal-section p {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .modal-section p strong { color: var(--text); font-weight: 500; }
+
+  .modal-formula {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    text-align: center;
+  }
+
+  .modal-table {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-top: 0.5rem;
+  }
+
+  .modal-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 60px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-row:last-child { border-bottom: none; }
+
+  .modal-row--header {
+    background: var(--bg);
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
   /* ── Footer ── */
   .footer {
     max-width: 1400px;
@@ -393,7 +602,7 @@
     font-size: 0.6rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--text-dim);
     position: relative;
     z-index: 1;
   }
@@ -410,19 +619,27 @@
 
   .arg-card { animation: fadeUp 0.5s ease-out both; }
 
-  .arguments-col:first-child .arg-card:nth-child(2) { animation-delay: 0.25s; }
-  .arguments-col:first-child .arg-card:nth-child(3) { animation-delay: 0.33s; }
-  .arguments-col:first-child .arg-card:nth-child(4) { animation-delay: 0.41s; }
-  .arguments-col:first-child .arg-card:nth-child(5) { animation-delay: 0.49s; }
-  .arguments-col:first-child .arg-card:nth-child(6) { animation-delay: 0.57s; }
-  .arguments-col:first-child .arg-card:nth-child(7) { animation-delay: 0.65s; }
+  .arguments-col:first-child .arg-card:nth-child(2) { animation-delay: 0.20s; }
+  .arguments-col:first-child .arg-card:nth-child(3) { animation-delay: 0.26s; }
+  .arguments-col:first-child .arg-card:nth-child(4) { animation-delay: 0.32s; }
+  .arguments-col:first-child .arg-card:nth-child(5) { animation-delay: 0.38s; }
+  .arguments-col:first-child .arg-card:nth-child(6) { animation-delay: 0.44s; }
+  .arguments-col:first-child .arg-card:nth-child(7) { animation-delay: 0.50s; }
+  .arguments-col:first-child .arg-card:nth-child(8) { animation-delay: 0.56s; }
+  .arguments-col:first-child .arg-card:nth-child(9) { animation-delay: 0.62s; }
+  .arguments-col:first-child .arg-card:nth-child(10) { animation-delay: 0.68s; }
+  .arguments-col:first-child .arg-card:nth-child(11) { animation-delay: 0.74s; }
 
-  .arguments-col:last-child .arg-card:nth-child(2) { animation-delay: 0.28s; }
-  .arguments-col:last-child .arg-card:nth-child(3) { animation-delay: 0.36s; }
-  .arguments-col:last-child .arg-card:nth-child(4) { animation-delay: 0.44s; }
-  .arguments-col:last-child .arg-card:nth-child(5) { animation-delay: 0.52s; }
-  .arguments-col:last-child .arg-card:nth-child(6) { animation-delay: 0.60s; }
-  .arguments-col:last-child .arg-card:nth-child(7) { animation-delay: 0.68s; }
+  .arguments-col:last-child .arg-card:nth-child(2) { animation-delay: 0.23s; }
+  .arguments-col:last-child .arg-card:nth-child(3) { animation-delay: 0.29s; }
+  .arguments-col:last-child .arg-card:nth-child(4) { animation-delay: 0.35s; }
+  .arguments-col:last-child .arg-card:nth-child(5) { animation-delay: 0.41s; }
+  .arguments-col:last-child .arg-card:nth-child(6) { animation-delay: 0.47s; }
+  .arguments-col:last-child .arg-card:nth-child(7) { animation-delay: 0.53s; }
+  .arguments-col:last-child .arg-card:nth-child(8) { animation-delay: 0.59s; }
+  .arguments-col:last-child .arg-card:nth-child(9) { animation-delay: 0.65s; }
+  .arguments-col:last-child .arg-card:nth-child(10) { animation-delay: 0.71s; }
+  .arguments-col:last-child .arg-card:nth-child(11) { animation-delay: 0.77s; }
 
   /* ── Responsive ── */
   @media (max-width: 800px) {
@@ -439,9 +656,8 @@
     .footer { padding: 2rem 1.5rem; }
 
     .verdict-labels { flex-wrap: wrap; gap: 0.3rem; }
-    .verdict-pct {
+    .verdict-pct-wrap {
       width: 100%;
-      text-align: center;
       order: -1;
       margin-bottom: 0.3rem;
     }
@@ -456,9 +672,12 @@
 <div class="verdict-strip">
   <div class="verdict-header">
     <div class="verdict-labels">
-      <span class="verdict-label verdict-label--worse">AI makes everything worse</span>
-      <span class="verdict-pct" id="verdict-pct">50 / 50</span>
-      <span class="verdict-label verdict-label--better">AI makes everything better</span>
+      <span class="verdict-label verdict-label--worse">Apocalypse</span>
+      <span class="verdict-pct-wrap">
+        <span class="verdict-pct" id="verdict-pct">50 / 50</span>
+        <span class="verdict-method" id="bayes-trigger">Bayesian posterior <span class="verdict-method-icon">?</span></span>
+      </span>
+      <span class="verdict-label verdict-label--better">Utopian Ascendence</span>
     </div>
     <div class="verdict-track">
       <div class="verdict-fill verdict-fill--worse" id="verdict-worse" style="width:50%"></div>
@@ -470,79 +689,244 @@
 
 <!-- Hero -->
 <div class="hero">
-  <h1>Does AI Make Everything<br><span class="gradient">Better?</span></h1>
-  <p>A living document. Arguments on each side, weighed and measured. The bar reflects the current balance of evidence.</p>
+  <h1>AI: Apocalypse or<br><span class="gradient">Ascendence?</span></h1>
+  <p>A living document. Arguments for AI-driven extinction and utopian transcendence, weighed by Bayesian posterior. The bar reflects the current balance of evidence.</p>
   <div class="byline">by <a href="https://borodutch.com">borodutch</a></div>
 </div>
 
 <!-- Arguments -->
 <div class="arguments">
   <div class="arguments-col" id="col-against">
-    <div class="col-header col-header--against">Arguments Against</div>
+    <div class="col-header col-header--against">Path to Apocalypse</div>
   </div>
   <div class="arguments-col" id="col-for">
-    <div class="col-header col-header--for">Arguments For</div>
+    <div class="col-header col-header--for">Path to Ascendence</div>
   </div>
 </div>
 
 <div class="footer">
-  Opinion as data &mdash; updated when evidence shifts
+  Bayesian estimate &mdash; updated when evidence shifts
+</div>
+
+<!-- Bayesian explainer modal -->
+<div class="modal-overlay" id="bayes-modal">
+  <div class="modal-card">
+    <button class="modal-close" id="bayes-close" aria-label="Close">&times;</button>
+    <h2 class="modal-title">Bayesian Posterior</h2>
+    <p class="modal-body">
+      The percentage isn't a simple vote count. It's a <strong>Bayesian posterior probability</strong> &mdash; the answer to: <em>"Given all the evidence on this page, how likely is utopian ascendence vs. apocalypse?"</em>
+    </p>
+    <div class="modal-section">
+      <h3>How it works</h3>
+      <p>We start with a <strong>prior</strong> of 50/50 &mdash; no opinion. Each argument updates the odds using <strong>Bayes' theorem in odds form</strong>:</p>
+      <div class="modal-formula">posterior odds = prior odds &times; LR<sub>1</sub> &times; LR<sub>2</sub> &times; &hellip;</div>
+      <p>Where LR is the <strong>likelihood ratio</strong> &mdash; how strongly that piece of evidence shifts the balance.</p>
+    </div>
+    <div class="modal-section">
+      <h3>Weight &rarr; Likelihood Ratio</h3>
+      <div class="modal-table">
+        <div class="modal-row modal-row--header">
+          <span>Weight</span><span>Label</span><span>LR</span>
+        </div>
+        <div class="modal-row">
+          <span>1</span><span>Minor point</span><span>1.2&times;</span>
+        </div>
+        <div class="modal-row">
+          <span>2</span><span>Solid argument</span><span>1.5&times;</span>
+        </div>
+        <div class="modal-row">
+          <span>3</span><span>Fundamental</span><span>2&times;</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <h3>Why Bayesian?</h3>
+      <p>Simple averaging treats a minor nitpick the same as a civilisation-shaping force. Bayesian updating lets <strong>strong evidence dominate</strong> &mdash; a single fundamental argument can outweigh many minor ones, just as it should when reasoning about existential outcomes.</p>
+    </div>
+  </div>
 </div>
 
 <script>
   const ARGUMENTS = {
     against: [
       {
-        title: "Unprecedented concentration of power",
-        body: "A handful of companies control the foundational models that increasingly mediate how billions of people work, learn, and create — giving them more influence over daily life than any government, with virtually no democratic accountability.",
+        title: "$3.7 trillion in wages sitting on the AI chopping block",
+        body: "Every job in America mapped by AI exposure — and $3.7T in annual US wages sits in jobs scored 7+ out of 10. That's not a rounding error in the economy. That's the economy. High-paying professional jobs (lawyers, SWEs, analysts) are going away, and their salaries fuel over 50% of GDP.",
+        weight: 3,
+        links: [
+          { label: "Karpathy's job exposure map", url: "https://www.linkedin.com/posts/zuhayeer_andrej-karpathy-mapped-every-job-in-america-activity-7439080640651849728-K2kE" },
+          { label: "Updated analysis", url: "https://www.linkedin.com/posts/zuhayeer_update-karpathys-us-job-market-ai-exposure-activity-7439352598891184128-Vaih" }
+        ]
+      },
+      {
+        title: "Cheap labor has collapsed civilizations before",
+        body: "When humanity had access to cheap labor — slavery — the economy prospered but it led to collapse of civilization or civil war. USA, Greece, Rome. History doesn't repeat itself, but it rhymes. And now we have nukes.",
         weight: 3
       },
       {
-        title: "The information ecosystem is collapsing",
-        body: "AI-generated slop, deepfakes, and synthetic media are flooding every channel of human communication. The cost of producing convincing lies is now near zero while the cost of verifying truth remains high.",
-        weight: 3
+        title: "The containment problem is unsolvable",
+        body: "Mustafa Suleyman's \"The Coming Wave\" predicted current developments precisely. AI is too simple to replicate, too useful to restrict, and too powerful to ignore. Containment and regulation are the key challenges — and even DeepMind insiders describe it as \"a force of nature.\"",
+        weight: 3,
+        links: [
+          { label: "The Coming Wave — summary", url: "https://yabc.borodutch.com/the-coming-wave/" },
+          { label: "Connor Leahy — AI is mutating", url: "https://youtu.be/rf2KFVcKQdQ" }
+        ]
       },
       {
-        title: "It hollows out the middle class — again",
-        body: "Unlike past automation waves that hit manual labor, AI targets knowledge workers — writers, coders, analysts, designers — the exact jobs that were supposed to be the safe path. The transition is happening faster than any retraining program can keep up with.",
+        title: "AI-powered cyberweapons are months away",
+        body: "Computer viruses are going to be madly effective. LLM-powered viruses as sleeping cells that adapt to each system, coordinated by a central LLM — not simple DDoS but environment-aware, adaptive malware that mutates on contact.",
         weight: 2
       },
       {
-        title: "Learning is being shortcut, not enhanced",
-        body: "Students using AI to write essays and solve problems aren't just cheating — they're skipping the cognitive struggle that builds critical thinking. We're raising a generation fluent in prompting but atrophied in reasoning.",
+        title: "Humanoid robots are already in combat",
+        body: "Humanoid robots are being deployed in the Ukraine war. The Terminator 3 scenario — where AI systems are weaponized at scale — feels less fictional by the month. China releasing an AI virus, Palantir building counter-AI called 'Skynet.'",
+        weight: 2,
+        links: [
+          { label: "Humanoid robots in Ukraine", url: "https://futurism.com/robots-and-machines/humanoid-robots-ukraine-war" },
+          { label: "T3 scene (increasingly relevant)", url: "https://www.youtube.com/watch?v=_Wlsd9mljiU" }
+        ]
+      },
+      {
+        title: "No capitalism in a broken market",
+        body: "Automating existing jobs is inglorious — it takes away jobs from people who can't find anything else. There's no capitalism in a broken market, only a race to the bottom. No future with AGI looks like the present.",
         weight: 2
       },
       {
-        title: "The environmental bill is hidden and growing",
-        body: "Training runs consume the energy of small cities, inference demands scale exponentially, and tech companies are quietly restarting coal plants while publishing sustainability reports. The carbon math does not add up.",
-        weight: 1
+        title: "The junior pipeline is being destroyed",
+        body: "Even if AI isn't directly replacing people, new companies are aiming for 5 employees instead of 50. The entry-level pipeline for developers, designers, and writers is evaporating. Nobody knows what happens when there are no juniors growing into seniors.",
+        weight: 2
+      },
+      {
+        title: "CEOs are using AI as a pretext for layoffs",
+        body: "Most layoffs aren't 'you're replaced by AI' — they're driven by overhiring cycles and the discovery that layoffs tick stock prices up. Companies push shittier products with fewer people and call it efficiency.",
+        weight: 2,
+        links: []
+      },
+      {
+        title: "Power law inequality gets worse",
+        body: "Just like with music, video, and book publishing — when everyone can create, the power law separating top earners from the rest becomes more extreme. It'll be harder to find good software in a flood of AI-generated apps.",
+        weight: 1,
+        links: [
+          { label: "App release acceleration (a16z)", url: "https://www.reddit.com/r/iOSProgramming/comments/1qlpm2l/" }
+        ]
+      },
+      {
+        title: "It's accelerating faster than anyone predicted",
+        body: "Opus 4.6 launched February 5, 2026. Less than 8 weeks later, Anthropic's leaked 'Mythos' model already shows a step change beyond it. OpenAI's 'Spud' finished pre-training the same week. Terence Tao went from calling AI a 'mediocre graduate student' in 2024 to 'ready for primetime' in 2026, using it to prove part of a new theorem. The gap between model generations is compressing from years to weeks.",
+        weight: 3,
+        links: [
+          { label: "Anthropic Mythos leak (Fortune)", url: "https://fortune.com/2026/03/26/anthropic-says-testing-mythos-powerful-new-ai-model-after-data-leak-reveals-its-existence-step-change-in-capabilities/" },
+          { label: "OpenAI Spud model", url: "https://www.geeky-gadgets.com/openai-spud-model/" },
+          { label: "Tao: AI ready for primetime", url: "https://www.revolutioninai.com/2026/03/openai-spud-model-gpt6-terence-tao-math-proof-2026.html" }
+        ]
+      },
+      {
+        title: "Selling knives to suicidals",
+        body: "Mo Gawdat says we need to prepare for AI government. The summary: we're selling knives to suicidals. The technology is advancing faster than our ability to develop the wisdom to wield it.",
+        weight: 1,
+        links: [
+          { label: "AI is making CEOs delusional", url: "https://youtu.be/Q6nem-F8AG8" },
+          { label: "I was a 10x engineer. Now I'm useless.", url: "https://youtu.be/pzkwn3hu1Cc" }
+        ]
       }
     ],
     for: [
       {
-        title: "It democratizes expertise gatekept by wealth",
-        body: "A farmer in rural India can now access medical triage, legal guidance, and technical education that previously required expensive professionals in expensive cities. AI is the most powerful equalizer of access to knowledge since the printing press.",
+        title: "Intelligence is democratized",
+        body: "Startups and indie devs are empowered because intelligence is democratized. One person can now ship at the speed of inference — building what used to require a 10-person company. The leverage for individuals is genuinely unprecedented.",
+        weight: 3,
+        links: [
+          { label: "Shipping at inference speed", url: "https://steipete.me/posts/2025/shipping-at-inference-speed" }
+        ]
+      },
+      {
+        title: "Digital biology will revolutionize medicine",
+        body: "Jensen's vision: synthesizing drugs and running pre-clinical trials in simulations. AI identifies drug candidates in weeks instead of years. If it works, this is the biggest leap in medicine since antibiotics.",
         weight: 3
       },
       {
-        title: "Scientific discovery is accelerating",
-        body: "AlphaFold solved protein folding, AI identifies drug candidates in weeks instead of years, and materials science is being revolutionized. These are not incremental gains — they are breakthroughs that save millions of lives.",
-        weight: 3
+        title: "Software 3.0 is a new paradigm",
+        body: "LLMs represent a new paradigm where you can convert millions of lines of code into models, enabling complexity growth beyond traditional limits. Programming itself is being reshaped — not replaced, but elevated.",
+        weight: 2,
+        links: [
+          { label: "Software 3.0 — LLMs reshaping programming", url: "https://novelis.io/research-lab/software-3-0-how-large-language-models-are-reshaping-programming-and-applications/" }
+        ]
       },
       {
-        title: "It gives a voice to people who literally couldn't speak",
-        body: "AI-powered assistive tools let nonverbal people communicate fluently, blind people navigate the visual world, and deaf people join real-time conversations. For disabled communities, this isn't convenience — it's liberation.",
+        title: "Generating movies and games on demand",
+        body: "Generating movies on demand will be faster than downloading a movie. Google's Genie project creates AI-generated games. Movies and games are merging into entirely new entertainment forms that don't exist yet.",
+        weight: 2,
+        links: [
+          { label: "Google Genie", url: "https://deepmind.google/models/genie/" },
+          { label: "Demo", url: "https://youtu.be/TsqOD7-7waw" }
+        ]
+      },
+      {
+        title: "AR glasses and neural interfaces are the next platform",
+        body: "AR glasses or neural interfaces will completely replace computers and smartphones. Google's Gemini glasses, Meta's AR Ray-Bans — the hardware is arriving. The entire concept of a 'screen' is about to become obsolete.",
+        weight: 2,
+        links: [
+          { label: "Hyper-Reality (concept film)", url: "https://www.youtube.com/watch?v=YJg02ivYzSs" },
+          { label: "Two device types in 2026", url: "https://glassalmanac.com/googles-new-gemini-glasses-reveal-2-device-types-in-2026-why-it-matters-now/" }
+        ]
+      },
+      {
+        title: "The job market is returning to normal, not collapsing",
+        body: "Job openings crashed when LLMs got good, but they've been slowly coming back to the mean. Engineers from dismantled companies find new jobs within two weeks. The tech job market for non-junior people seems as functional as ever.",
+        weight: 2,
+        links: [
+          { label: "State of the product job market", url: "https://www.linkedin.com/posts/lennyrachitsky_state-of-the-product-job-market-in-early-ugcPost-7442257041571786752-E1bt" }
+        ]
+      },
+      {
+        title: "Humans are resilient — society finds equilibrium",
+        body: "Society ends up in equilibrium in the end. Humans are resilient. Even if it's depression-level disruption, it won't last more than a generation. We've survived worse transitions.",
         weight: 2
       },
       {
-        title: "One person can now do the work of a team",
-        body: "A solo developer can build what used to require a 10-person company. A single researcher can process a literature base that would take a department years. The leverage for individuals is genuinely unprecedented.",
-        weight: 2
+        title: "Robotics is accelerating into the physical world",
+        body: "Robotics progress is real and accelerating. Amazon did warehouse robots a decade ago — now the frontier is humanoid general-purpose robots. Housing, construction, infrastructure — problems humans at large can't seem to solve without robotics.",
+        weight: 2,
+        links: [
+          { label: "Robotics demo", url: "https://x.com/Rainmaker1973/status/2032096774521786397" }
+        ]
       },
       {
-        title: "It forces the question we should have asked decades ago",
-        body: "By automating the drudge work most people quietly hated — data entry, boilerplate, routine analysis — AI creates pressure to restructure economies around what humans uniquely value: care, craft, connection, and judgment.",
-        weight: 1
+        title: "Visual programming opens a bigger market",
+        body: "Google's Opal: 'there's no code here under the hood.' Visual programming for non-programmers opens a vastly bigger market than traditional software development ever could.",
+        weight: 1,
+        links: [
+          { label: "Google Opal", url: "https://opal.google/landing/?source=labs" }
+        ]
+      },
+      {
+        title: "Coasean bargaining at scale",
+        body: "AI enables new economic coordination mechanisms — Coasean bargaining at scale. Transaction costs that previously made cooperation impossible are collapsing, unlocking entirely new forms of organization.",
+        weight: 1,
+        links: [
+          { label: "Coasean bargaining at scale", url: "https://blog.cosmos-institute.org/p/coasean-bargaining-at-scale" }
+        ]
+      },
+      {
+        title: "If collapse is coming, we need AI to shorten it",
+        body: "Hari Seldon used psychohistory to compress a 30,000-year dark age into 1,000. If socioeconomic collapse is inevitable regardless, accelerating AI might be the only way to get through it faster — not causing the crisis, but building the Foundation that survives it.",
+        weight: 2,
+        links: [
+          { label: "The AI Empire Problem (Seldon parallel)", url: "https://www.jpegconsult.com/p/vol-5-issue-7-the-ai-empire-problem" },
+          { label: "Was Hari Seldon just a doomer?", url: "https://www.seldoncrisis.net/p/was-hari-seldon-just-a-doomer" },
+          { label: "Effective accelerationism", url: "https://en.wikipedia.org/wiki/Effective_accelerationism" }
+        ]
+      },
+      {
+        title: "Jobs don't vanish overnight — most of the world isn't affected",
+        body: "Serbia has 19% AI adoption. Most of the developing world is below 20%. Insurance companies employ 3+ million Americans not because they need them but as a lobbying shield against regulation. The Bay Area might become the next Detroit, but most cities won't notice for a generation.",
+        weight: 2,
+        links: [
+          { label: "Serbia at 19% AI adoption (Euronews)", url: "https://www.euronews.com/next/2025/12/29/chatgpt-gemini-grok-and-others-which-countries-use-generative-ai-tools-most-across-europe" },
+          { label: "Bay Area stands alone on AI (Carnegie)", url: "https://carnegieendowment.org/posts/2025/10/ai-adoption-california-survey-bay-area?lang=en" },
+          { label: "Insurance industry: 3M+ jobs (III)", url: "https://www.iii.org/fact-statistic/facts-statistics-careers-and-employment" },
+          { label: "There will be more Detroits", url: "https://insights.techne.ai/p/there-will-be-more-detroits" }
+        ]
       }
     ]
   };
@@ -563,9 +947,16 @@
     function createCard(arg, side) {
       const card = document.createElement('div');
       card.className = `arg-card arg-card--${side}`;
+      let linksHtml = '';
+      if (arg.links && arg.links.length) {
+        linksHtml = '<div class="arg-links">' +
+          arg.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join('') +
+          '</div>';
+      }
       card.innerHTML = `
         <h3>${arg.title}</h3>
         <p>${arg.body}</p>
+        ${linksHtml}
         <span class="arg-weight">${weightLabels[arg.weight] || 'Weight ' + arg.weight}</span>
       `;
       return card;
@@ -574,17 +965,23 @@
     ARGUMENTS.against.forEach(arg => colAgainst.appendChild(createCard(arg, 'against')));
     ARGUMENTS.for.forEach(arg => colFor.appendChild(createCard(arg, 'for')));
 
-    // Calculate verdict
-    const totalAgainst = ARGUMENTS.against.reduce((sum, a) => sum + a.weight, 0);
-    const totalFor = ARGUMENTS.for.reduce((sum, a) => sum + a.weight, 0);
-    const total = totalAgainst + totalFor;
-
-    let pctBetter = total === 0 ? 50 : Math.round((totalFor / total) * 100);
+    // Bayesian posterior: start with 50/50 prior, update with likelihood ratios
+    // Each argument is treated as independent evidence.
+    // Weight → likelihood ratio (how strongly it shifts the odds):
+    //   1 (minor)       → LR 1.2
+    //   2 (solid)       → LR 1.5
+    //   3 (fundamental) → LR 2.0
+    const LR_MAP = { 1: 1.2, 2: 1.5, 3: 2 };
+    let odds = 1; // prior odds 1:1 (P = 0.5)
+    ARGUMENTS.for.forEach(a => { odds *= (LR_MAP[a.weight] || 1); });
+    ARGUMENTS.against.forEach(a => { odds /= (LR_MAP[a.weight] || 1); });
+    const posterior = odds / (1 + odds); // convert odds to probability
+    let pctBetter = Math.round(posterior * 100);
     const pctWorse = 100 - pctBetter;
 
     document.getElementById('verdict-worse').style.width = pctWorse + '%';
     document.getElementById('verdict-better').style.width = pctBetter + '%';
-    document.getElementById('verdict-marker').style.left = pctBetter + '%';
+    document.getElementById('verdict-marker').style.left = pctWorse + '%';
     document.getElementById('verdict-pct').textContent = pctWorse + ' / ' + pctBetter;
 
     const marker = document.getElementById('verdict-marker');
@@ -601,6 +998,18 @@
   }
 
   render();
+
+  // Bayesian explainer modal
+  const modal = document.getElementById('bayes-modal');
+  document.getElementById('bayes-trigger').addEventListener('click', () => {
+    modal.classList.add('modal--open');
+  });
+  document.getElementById('bayes-close').addEventListener('click', () => {
+    modal.classList.remove('modal--open');
+  });
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.remove('modal--open');
+  });
 </script>
 
 </body>

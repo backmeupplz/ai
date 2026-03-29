@@ -20,7 +20,13 @@ Arguments live in the `ARGUMENTS` object in the `<script>` tag at the bottom of 
 - `weight: 2` = solid argument
 - `weight: 3` = fundamental
 
-The top bar percentage is computed from total weights: `for / (for + against)`. Equal weights = 50/50. Adding a heavy "for" argument shifts the bar right (green), and vice versa.
+The top bar percentage uses **Bayesian updating**:
+- Prior: 50/50 odds (P = 0.5)
+- Each argument updates the odds via a likelihood ratio: weight 1 → LR 1.5, weight 2 → LR 3, weight 3 → LR 6
+- "For" arguments multiply odds, "against" arguments divide
+- Final probability = odds / (1 + odds)
+
+Equal weights on both sides = 50/50. Unbalanced arguments shift the posterior non-linearly (stronger arguments have exponentially more impact).
 
 ## Common tasks
 
@@ -28,6 +34,7 @@ The top bar percentage is computed from total weights: `for / (for + against)`. 
 - **Remove an argument**: Delete the entry from the array.
 - **Change the bar position**: Adjust weights on existing arguments or add/remove arguments.
 - **Style changes**: All CSS is in the `<style>` tag in the same file.
+- **Update OG image**: After changing arguments, update `og.svg` bar position/percentage/marker to match the new Bayesian result, then regenerate: `rsvg-convert og.svg -w 1200 -h 630 -o og.png`
 
 ## Deployment
 

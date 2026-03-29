@@ -38,21 +38,22 @@
   <ellipse cx="1000" cy="315" rx="300" ry="250" fill="#4aba6a" opacity="0.03"/>
 
   <!-- Title -->
-  <text x="600" y="240" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="72" letter-spacing="-2" fill="#ececef">Does AI Make Everything</text>
-  <text x="600" y="330" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="80" letter-spacing="-2" fill="url(#textGrad)">Better?</text>
+  <text x="600" y="240" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="72" letter-spacing="-2" fill="#ececef">AI: Apocalypse or</text>
+  <text x="600" y="330" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="80" letter-spacing="-2" fill="url(#textGrad)">Ascendence?</text>
 
   <!-- Bar track -->
   <rect x="150" y="400" width="900" height="10" rx="5" fill="#1e1e22"/>
   <!-- Bar fill -->
   <rect x="150" y="400" width="900" height="10" rx="5" fill="url(#barGrad)" opacity="0.8"/>
   <!-- Marker -->
-  <circle cx="600" cy="405" r="10" fill="#ececef" stroke="#09090b" stroke-width="3"/>
-  <circle cx="600" cy="405" r="13" fill="none" stroke="#2a2a30" stroke-width="1.5"/>
+  <circle cx="636" cy="405" r="10" fill="#ececef" stroke="#09090b" stroke-width="3"/>
+  <circle cx="636" cy="405" r="13" fill="none" stroke="#2a2a30" stroke-width="1.5"/>
 
   <!-- Labels -->
-  <text x="150" y="450" font-family="monospace" font-size="13" letter-spacing="1.5" fill="#e05448" text-transform="uppercase">WORSE</text>
-  <text x="600" y="450" text-anchor="middle" font-family="monospace" font-size="13" letter-spacing="1" fill="#4e4e56">50 / 50</text>
-  <text x="1050" y="450" text-anchor="end" font-family="monospace" font-size="13" letter-spacing="1.5" fill="#4aba6a">BETTER</text>
+  <text x="150" y="450" font-family="monospace" font-size="13" letter-spacing="1.5" fill="#e05448" text-transform="uppercase">APOCALYPSE</text>
+  <text x="600" y="450" text-anchor="middle" font-family="monospace" font-size="13" letter-spacing="1" fill="#4e4e56">54 / 46</text>
+  <text x="600" y="475" text-anchor="middle" font-family="monospace" font-size="10" letter-spacing="2" fill="#4e4e56" opacity="0.6">BAYESIAN POSTERIOR</text>
+  <text x="1050" y="450" text-anchor="end" font-family="monospace" font-size="13" letter-spacing="1.5" fill="#4aba6a">UTOPIAN ASCENDENCE</text>
 
   <!-- Byline -->
   <text x="600" y="530" text-anchor="middle" font-family="monospace" font-size="14" letter-spacing="2" fill="#4e4e56">BORODUTCH.COM</text>
