@@ -22,7 +22,7 @@ Arguments live in the `ARGUMENTS` object in the `<script>` tag at the bottom of 
 
 The top bar percentage uses **Bayesian updating**:
 - Prior: 50/50 odds (P = 0.5)
-- Each argument updates the odds via a likelihood ratio: weight 1 → LR 1.5, weight 2 → LR 3, weight 3 → LR 6
+- Each argument updates the odds via a likelihood ratio: weight 1 → LR 1.2, weight 2 → LR 1.5, weight 3 → LR 2
 - "For" arguments multiply odds, "against" arguments divide
 - Final probability = odds / (1 + odds)
 
@@ -30,11 +30,14 @@ Equal weights on both sides = 50/50. Unbalanced arguments shift the posterior no
 
 ## Common tasks
 
-- **Add an argument**: Add an entry to `ARGUMENTS.against` or `ARGUMENTS.for` in the script. Pick an appropriate weight. The bar auto-rebalances.
-- **Remove an argument**: Delete the entry from the array.
+- **Add an argument**: Add an entry to `ARGUMENTS.against` or `ARGUMENTS.for` in the script. Pick an appropriate weight. Place it among other arguments of the same weight (weight 3 first, then 2, then 1). **Always recalculate and update the OG image after adding/removing/reweighting arguments** (see below).
+- **Remove an argument**: Delete the entry from the array. **Always recalculate and update the OG image** (see below).
 - **Change the bar position**: Adjust weights on existing arguments or add/remove arguments.
 - **Style changes**: All CSS is in the `<style>` tag in the same file.
-- **Update OG image**: After changing arguments, update `og.svg` bar position/percentage/marker to match the new Bayesian result, then regenerate: `rsvg-convert og.svg -w 1200 -h 630 -o og.png`
+- **Update OG image** (REQUIRED after any argument change):
+  1. Calculate the new Bayesian posterior by extracting all weights from `ARGUMENTS.for` and `ARGUMENTS.against`, using `LR_MAP` from the script (`{ 1: 1.2, 2: 1.5, 3: 2 }`).
+  2. Update `og.svg`: set the marker `cx` to `150 + (pctWorse / 100) * 900`, and update the percentage text to `"pctWorse / pctBetter"`.
+  3. Regenerate the PNG: `rsvg-convert og.svg -w 1200 -h 630 -o og.png`
 
 ## Deployment
 
